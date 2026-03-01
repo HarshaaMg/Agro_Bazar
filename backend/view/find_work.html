@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Find Work | Agrobazaar</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: 'Nunito Sans', sans-serif;
+    }
+  </style>
+</head>
+<body class="bg-green-50 min-h-screen text-gray-800">
+
+  <!-- Navbar -->
+  <header class="bg-green-700 text-white sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto flex justify-between items-center px-4 py-3">
+      <div class="flex items-center space-x-2">
+        <img src="/images/Agrobazaar_logo.png" alt="Agrobazaar Logo" class="h-10 w-auto">
+        <span class="text-xl font-bold">Agrobazaar</span>
+      </div>
+      <nav class="hidden md:flex space-x-6">
+        <a href="/" class="hover:underline">Home</a>
+        <a href="/rent-buy" class="hover:underline">Rent/Buy Tools</a>
+        <a href="/sell" class="hover:underline">Sell Tools</a>
+        <a href="/post" class="hover:underline">Post Labour Job</a>
+        <a href="/find" class="underline font-semibold">Find Work</a>
+        <a href="/dashboard" class="hover:underline">Dashboard</a>
+        <a href="/login" class="bg-white text-green-700 px-4 py-1 rounded hover:bg-green-100">Login/Register</a>
+      </nav>
+      <button id="menu-btn" class="md:hidden focus:outline-none">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2"
+          viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+    </div>
+    <div id="mobile-menu" class="absolute top-full left-0 w-full z-40 bg-green-600 transform origin-top scale-y-0 opacity-0 transition-all duration-300 ease-in-out md:hidden px-4 pb-4 space-y-2">
+      <a href="/" class="block hover:underline">Home</a>
+      <a href="/rent-buy" class="block hover:underline">Rent/Buy Tools</a>
+      <a href="/sell" class="block hover:underline">Sell Tools</a>
+      <a href="/post" class="block hover:underline">Post Labour Job</a>
+      <a href="/find" class="block underline font-semibold">Find Work</a>
+      <a href="/dashboard" class="block hover:underline">Dashboard</a>
+      <a href="/login" class="block bg-white text-green-700 px-4 py-1 rounded hover:bg-green-100">Login/Register</a>
+    </div>
+  </header>
+
+  <!-- Filters -->
+  <section class="max-w-7xl mx-auto px-4 py-6">
+    <h2 class="text-2xl font-bold mb-4 text-center">Find Labour Jobs</h2>
+    <div class="flex justify-center gap-4 mb-6">
+      <button class="job-filter px-4 py-2 rounded border border-green-700 text-white bg-green-700" data-type="all">All</button>
+      <button class="job-filter px-4 py-2 rounded border border-green-700 text-green-700 bg-white" data-type="fulltime">Full-Time</button>
+      <button class="job-filter px-4 py-2 rounded border border-green-700 text-green-700 bg-white" data-type="parttime">Part-Time</button>
+    </div>
+
+    <!-- Job Cards -->
+    <div id="job-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+  </section>
+
+  <!-- Inject server-side jobs -->
+  <script>
+    const jobs = <%- JSON.stringify(work) %>;
+  </script>
+
+  <!-- JS Logic -->
+  <script>
+    let currentFilter = 'all';
+    const jobContainer = document.getElementById('job-container');
+
+    function renderJobs() {
+      jobContainer.innerHTML = '';
+      const filtered = currentFilter === 'all'
+        ? jobs
+        : jobs.filter(job => job.jobType === currentFilter);
+
+      if (filtered.length === 0) {
+        jobContainer.innerHTML = `<p class="col-span-full text-center text-gray-600">No jobs found for selected filter.</p>`;
+        return;
+      }
+
+      filtered.forEach(job => {
+        const card = document.createElement('div');
+        card.className = "bg-white rounded shadow p-4";
+        card.innerHTML = `
+          <h3 class="text-xl font-semibold mb-1">${job.title}</h3>
+          <p class="text-sm text-gray-600 mb-1">Type: ${job.jobType?.toUpperCase()}</p>
+          <p class="text-sm text-gray-600 mb-1">Wage: ₹${job.wage}/day</p>
+          <p class="text-sm text-gray-600 mb-1">Location: ${job.location?.address || "—"}</p>
+          <p class="text-sm text-gray-600 mb-1">Seasonal: ${job.seasonal ? 'Yes' : 'No'}</p>
+          <p class="text-sm text-gray-600 mb-3">Date: ${new Date(job.date).toLocaleDateString()}</p>
+          <button class="bg-green-700 text-white w-full py-2 rounded">Apply</button>
+        `;
+        jobContainer.appendChild(card);
+      });
+    }
+
+    // Filter logic
+    document.querySelectorAll('.job-filter').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.job-filter').forEach(b => {
+          b.classList.remove('bg-green-700', 'text-white');
+          b.classList.add('bg-white', 'text-green-700');
+        });
+
+        btn.classList.remove('bg-white', 'text-green-700');
+        btn.classList.add('bg-green-700', 'text-white');
+
+        currentFilter = btn.dataset.type;
+        renderJobs();
+      });
+    });
+
+    renderJobs();
+
+    // Hamburger menu toggle
+    const menuBtn = document.getElementById('menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    let menuOpen = false;
+    menuBtn.addEventListener('click', () => {
+      menuOpen = !menuOpen;
+      mobileMenu.classList.toggle('scale-y-0', !menuOpen);
+      mobileMenu.classList.toggle('opacity-0', !menuOpen);
+      mobileMenu.classList.toggle('scale-y-100', menuOpen);
+      mobileMenu.classList.toggle('opacity-100', menuOpen);
+    });
+  </script>
+
+</body>
+</html>

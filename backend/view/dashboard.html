@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard | Agrobazaar</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: 'Nunito Sans', sans-serif;
+    }
+    a.job-link {
+      text-decoration: none;
+      color: #166534;
+    }
+    a.job-link:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body class="bg-green-50 min-h-screen text-gray-800">
+
+  <!-- Navbar -->
+  <header class="bg-green-700 text-white sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto flex justify-between items-center px-4 py-3">
+      <!-- Logo -->
+      <div class="flex items-center space-x-2">
+        <img src="Agrobazaar_logo.png" alt="Agrobazaar Logo" class="h-10 w-auto">
+        <span class="text-xl font-bold">Agrobazaar</span>
+      </div>
+
+      <!-- Desktop Nav -->
+      <nav class="hidden md:flex space-x-6">
+        <a href="/" class="hover:underline">Home</a>
+        <a href="/rent-buy" class="hover:underline">Rent/Buy Tools</a>
+        <a href="/sell" class="hover:underline">Sell Tools</a>
+        <a href="/post" class="hover:underline">Post Labour Job</a>
+        <a href="/find" class="hover:underline">Find Work</a>
+        <a href="/dashboard" class="underline font-semibold">Dashboard</a>
+        <a href="/login" class="bg-white text-green-700 px-4 py-1 rounded hover:bg-green-100">Login/Register</a>
+      </nav>
+
+      <!-- Hamburger Button -->
+      <button id="menu-btn" class="md:hidden focus:outline-none">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2"
+          viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="absolute top-full left-0 w-full z-40 bg-green-600 transform origin-top scale-y-0 opacity-0 transition-all duration-300 ease-in-out md:hidden px-4 pb-4 space-y-2">
+      <a href="homepage.html" class="block hover:underline">Home</a>
+      <a href="rent_buy_tools.html" class="block hover:underline">Rent/Buy Tools</a>
+      <a href="sell_tools.html" class="block hover:underline">Sell Tools</a>
+      <a href="post_labour_jobs.html" class="block hover:underline">Post Labour Job</a>
+      <a href="find_work.html" class="block hover:underline">Find Work</a>
+      <a href="dashboard.html" class="block underline font-semibold">Dashboard</a>
+      <a href="login.html" class="block bg-white text-green-700 px-4 py-1 rounded hover:bg-green-100">Login/Register</a>
+    </div>
+  </header>
+
+  <!-- Dashboard Content -->
+  <main class="max-w-5xl mx-auto px-4 py-8 space-y-10">
+    <section>
+      <h2 class="text-2xl font-bold mb-4">Jobs You Have Posted</h2>
+      <div class="space-y-6" id="jobs-posted"></div>
+    </section>
+
+    <section>
+      <h2 class="text-2xl font-bold mb-4">Jobs You Have Applied To</h2>
+      <div class="space-y-4" id="jobs-applied"></div>
+    </section>
+  </main>
+
+  <script>
+    const userDashboardData = {
+      jobsPosted: [
+        {
+          id: 1,
+          title: "Harvesting Help Needed",
+          location: "Nagpur, MH",
+          applicants: [
+            { name: "Rahul Kumar", phone: "9876543210", email: "rahul@email.com", appliedAt: "2025-06-15" },
+            { name: "Sita Devi", phone: "9876512345", email: "sita@email.com", appliedAt: "2025-06-18" }
+          ]
+        },
+        {
+          id: 2,
+          title: "Ploughing Work",
+          location: "Kanpur, UP",
+          applicants: []
+        }
+      ],
+      jobsApplied: [
+        {
+          id: 3,
+          title: "Tractor Driver Needed",
+          employer: "Ramesh Singh",
+          location: "Patna, BR",
+          status: "Pending",
+          appliedAt: "2025-06-10"
+        }
+      ]
+    };
+
+    const jobsPostedEl = document.getElementById('jobs-posted');
+    userDashboardData.jobsPosted.forEach(job => {
+      const div = document.createElement('div');
+      div.className = "bg-white shadow rounded p-4";
+      let html = `<h3 class="text-lg font-semibold mb-1"><a href="job-details.html?id=${job.id}" class="job-link">${job.title}</a> - ${job.location}</h3>`;
+      if (job.applicants.length) {
+        html += `<p class="mt-2 font-medium">Applicants:</p><ul class="list-disc list-inside space-y-2">`;
+        job.applicants.forEach(applicant => {
+          html += `<li>
+            <strong>${applicant.name}</strong> - ${applicant.phone}, ${applicant.email}<br>
+            <small class="text-gray-600">Applied on: ${applicant.appliedAt}</small><br>
+            <button class="mt-1 mr-2 bg-green-600 text-white px-3 py-1 rounded text-sm">Accept</button>
+            <button class="mt-1 bg-red-600 text-white px-3 py-1 rounded text-sm">Reject</button>
+          </li>`;
+        });
+        html += `</ul>`;
+      } else {
+        html += `<p class="text-gray-500 mt-2">No one has applied yet.</p>`;
+      }
+      div.innerHTML = html;
+      jobsPostedEl.appendChild(div);
+    });
+
+    const jobsAppliedEl = document.getElementById('jobs-applied');
+    userDashboardData.jobsApplied.forEach(job => {
+      const div = document.createElement('div');
+      div.className = "bg-white shadow rounded p-4";
+      div.innerHTML = `
+        <h3 class="text-lg font-semibold mb-1"><a href="job-details.html?id=${job.id}" class="job-link">${job.title}</a></h3>
+        <p class="text-sm text-gray-600">Location: ${job.location}</p>
+        <p class="text-sm text-gray-600">Employer: ${job.employer}</p>
+        <p class="text-sm text-gray-600">Status: <span class="font-medium">${job.status}</span></p>
+        <p class="text-sm text-gray-500">Applied on: ${job.appliedAt}</p>
+      `;
+      jobsAppliedEl.appendChild(div);
+    });
+
+    // Mobile menu animation toggle
+    const menuBtn = document.getElementById('menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    let menuOpen = false;
+    menuBtn.addEventListener('click', () => {
+      menuOpen = !menuOpen;
+      if (menuOpen) {
+        mobileMenu.classList.remove('scale-y-0', 'opacity-0');
+        mobileMenu.classList.add('scale-y-100', 'opacity-100');
+      } else {
+        mobileMenu.classList.add('scale-y-0', 'opacity-0');
+        mobileMenu.classList.remove('scale-y-100', 'opacity-100');
+      }
+    });
+  </script>
+
+</body>
+</html>

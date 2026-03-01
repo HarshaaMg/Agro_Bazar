@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # React + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
@@ -10,3 +11,7 @@ Currently, two official plugins are available:
 ## Expanding the ESLint configuration
 
 If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+=======
+# Agro_Bazar
+Agro Bazar is a comprehensive agricultural platform designed to empower farmers and agricultural workers. It features tools for buying, selling, and renting farming equipment, alongside a robust job board for posting and applying to agricultural labor jobs.
+>>>>>>> 1fc088290325a54966406d5183a36ebea322368a
